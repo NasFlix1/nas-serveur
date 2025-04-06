@@ -9,5 +9,5 @@ modules:
     buildsystem: simple
     sources:
       - type: git
-        url: https://github.com/NasFlix1/serveur nas.git
+        url: https://github.com/NasFlix1/nas-serveur.git
         branch: master
