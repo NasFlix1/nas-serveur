@@ -1,0 +1,13 @@
+app-id: com.tondev.nasflix
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: nasflix
+
+modules:
+  - name: nasflix
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/NasFlix1/serveur nas.git
+        branch: master
