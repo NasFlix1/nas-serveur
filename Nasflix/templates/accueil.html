@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nasflix - Accueil</title>
+    <style>
+        /* Style global pour la page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f4;
+            transition: margin-left 0.3s;
+        }
+
+        /* Style du menu latéral */
+        .sidebar {
+            width: 0; /* Le menu est caché au départ */
+            height: 100%;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            transition: width 0.3s ease;
+            overflow: hidden;
+            padding-top: 20px;
+            padding-left: 10px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        /* Effet de survol pour ouvrir le menu */
+        .sidebar:hover {
+            width: 250px; /* Ouvre le menu */
+        }
+
+        /* Contenu principal à droite */
+        .content {
+            margin-left: 0; /* Aucune marge au début */
+            padding: 20px;
+            width: 100%;
+            transition: margin-left 0.3s;
+        }
+
+        .sidebar:hover + .content {
+            margin-left: 250px; /* Décale le contenu quand le menu est ouvert */
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        /* Conteneur des films/séries */
+        .media-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .media-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .media-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .media-item h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+
+        .media-item .category {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu latéral interactif -->
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a href="films" onclick="showCategory('films')">Films</a>
+        <a href="#" onclick="showCategory('series')">Séries</a>
+        <a href="#" onclick="showCategory('autres')">Autres</a>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="content">
+        <h1>Liste des Médiathèques</h1>
+
+        <!-- Section pour afficher les films, séries, etc. -->
+        <div class="media-container" id="media-container">
+            {% for media in mediatheques %}
+                <div class="media-item" data-category="{{ media[2] }}">
+                    <h3>{{ media[1] }}</h3>
+                    <p class="category"><strong>Catégorie:</strong> {{ media[2] }}</p>
+                    <p><strong>Chemin:</strong> {{ media[3] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour filtrer les médias par catégorie
+        function showCategory(category) {
+            let items = document.querySelectorAll('.media-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-category') === category || category === 'autres') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialiser le filtre par défaut sur "Films"
+        showCategory('films');
+    </script>
+
+</body>
+</html>

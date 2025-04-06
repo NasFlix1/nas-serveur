@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer une Médiathèque - Nasflix</title>
+    <style>
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Créer une Nouvelle Médiathèque</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <label for="nom">Nom de la Médiathèque :</label>
+        <input type="text" id="nom" name="nom" required>
+
+        <label for="type_contenu">Type de Contenu :</label>
+        <select id="type_contenu" name="type_contenu">
+            <option value="Film">Film</option>
+            <option value="Série">Série</option>
+            <option value="Musique">Musique</option>
+            <option value="Documentaire">Documentaire</option>
+        </select>
+
+        <label for="chemin">Sélectionner un dossier contenant les fichiers :</label>
+        <input type="file" id="chemin" name="chemin" webkitdirectory directory required>
+
+        <button type="submit" class="btn">Créer la Médiathèque</button>
+    </form>
+</body>
+</html>

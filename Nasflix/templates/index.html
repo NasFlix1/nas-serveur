@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nasflix - Ajouter une Médiathèque</title>
+    <style>
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-green {
+            background-color: #28a745;
+        }
+
+        .btn-green:hover {
+            background-color: #218838;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .input-field {
+            margin: 10px 0;
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .folder-item {
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .folder-item:hover {
+            background-color: #ddd;
+        }
+
+        .breadcrumb {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .breadcrumb span {
+            margin-right: 10px;
+            cursor: pointer;
+            color: blue;
+        }
+
+        .breadcrumb span:hover {
+            text-decoration: underline;
+        }
+
+        .top-buttons {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-buttons a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Ajouter une Médiathèque</h1>
+
+    <!-- Boutons + et Accueil -->
+    <div class="top-buttons">
+        <button class="btn" id="addFolderBtn">+</button>
+        <a href="accueil"><button class="btn btn-green">Accueil</button></a>
+    </div>
+
+    <!-- La Popup -->
+    <div id="folderPopup" class="popup">
+        <div class="popup-content">
+            <h2>Ajouter une Médiathèque</h2>
+            
+            <!-- Formulaire -->
+            <label for="mediaName">Nom de la Médiathèque:</label>
+            <input type="text" id="mediaName" class="input-field" placeholder="Nom de la médiathèque">
+            
+            <label for="category">Catégorie:</label>
+            <select id="category" class="input-field">
+                <option value="Films">Films</option>
+                <option value="Séries">Séries</option>
+                <option value="Musique">Musique</option>
+                <option value="Jeux">Jeux</option>
+                <option value="Livres">Livres</option>
+            </select>
+            
+            <label for="folderPath">Chemin du Dossier:</label>
+            <input type="text" id="folderPath" class="input-field" disabled placeholder="Chemin du dossier sélectionné">
+
+            <div class="breadcrumb" id="breadcrumb"></div>
+
+            <!-- Liste des dossiers -->
+            <div id="folderList"></div>
+            
+            <!-- Bouton Enregistrer -->
+            <button class="btn" id="saveFolderBtn">Enregistrer</button>
+            <button class="btn" id="closePopupBtn" style="background-color: red;">Fermer</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('addFolderBtn').addEventListener('click', function() {
+            document.getElementById('folderPopup').style.display = 'flex';
+            loadFolders('/');
+        });
+
+        document.getElementById('closePopupBtn').addEventListener('click', function() {
+            document.getElementById('folderPopup').style.display = 'none';
+        });
+
+        function loadFolders(path) {
+            document.getElementById('folderPath').value = path;
+            updateBreadcrumb(path);
+
+            fetch(`/get_folders?path=${encodeURIComponent(path)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const folderList = document.getElementById('folderList');
+                        folderList.innerHTML = '';
+
+                        data.folders.forEach(folder => {
+                            const div = document.createElement('div');
+                            div.classList.add('folder-item');
+                            div.textContent = folder;
+                            div.addEventListener('click', function() {
+                                loadFolders(data.current_path + '/' + folder);
+                            });
+                            folderList.appendChild(div);
+                        });
+                    } else {
+                        alert('Erreur : ' + data.message);
+                    }
+                });
+        }
+
+        function updateBreadcrumb(path) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const parts = path.split('/');
+            breadcrumb.innerHTML = '';
+
+            let currentPath = '';
+            parts.forEach(part => {
+                if (part) {
+                    currentPath += '/' + part;
+                    const span = document.createElement('span');
+                    span.textContent = part;
+                    span.addEventListener('click', function() {
+                        loadFolders(currentPath);
+                    });
+                    breadcrumb.appendChild(span);
+                }
+            });
+        }
+
+        document.getElementById('saveFolderBtn').addEventListener('click', function() {
+            const mediaName = document.getElementById('mediaName').value;
+            const category = document.getElementById('category').value;
+            const folderPath = document.getElementById('folderPath').value;
+
+            if (!mediaName || !folderPath) {
+                alert('Veuillez remplir tous les champs.');
+                return;
+            }
+
+            fetch('/save_folder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nom: mediaName,
+                    categorie: category,
+                    path: folderPath
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Dossier ajouté avec succès');
+                    document.getElementById('folderPopup').style.display = 'none';
+                } else {
+                    alert('Erreur lors de l\'enregistrement');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

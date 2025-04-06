@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catégorie: {{ category_name }}</title>
+    <style>
+        .folder {
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            background-color: #f9f9f9;
+            display: inline-block;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dossiers pour la catégorie "{{ category_name }}"</h1>
+
+    <div>
+        {% if folders %}
+            <h2>Sous-dossiers</h2>
+            {% for folder in folders %}
+            <div class="folder" onclick="window.location.href='{{ url_for('category', category_name=category_name, path=folder) }}'">
+                <p>{{ folder.split('/')[-1] }}</p>
+            </div>
+            {% endfor %}
+        {% elif files %}
+            <h2>Fichiers</h2>
+            {% for file in files %}
+            <div class="folder">
+                <p>{{ file }}</p>
+            </div>
+            {% endif %}
+        {% else %}
+            <p>Aucun dossier ou fichier trouvé pour cette catégorie.</p>
+        {% endif %}
+    </div>
+
+    <br><br>
+    <a href="{{ url_for('home') }}">Retour à l'accueil</a>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .film-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .film-cover {
+            width: 100%;
+            height: 400px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+        }
+
+        .film-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .film-description {
+            font-size: 16px;
+            color: #dddddd;
+            margin-bottom: 10px;
+        }
+
+        .film-info {
+            font-size: 14px;
+            color: #cccccc;
+            margin-bottom: 5px;
+        }
+
+        .film-info strong {
+            color: #ffffff;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="film-details">
+        <div class="film-cover" style="background-image: url('/static/images/placeholder.jpg');"></div>
+
+        <div class="film-title">{{ title }}</div>
+        <div class="film-info"><strong>Date:</strong> {{ date }}</div>
+        <div class="film-description">{{ description }}</div>
+        <div class="film-info"><strong>Acteurs:</strong> {{ actors }}</div>
+        <div class="film-info"><strong>Qualité:</strong> {{ quality }}</div>
+
+        <video width="100%" controls>
+            <source src="{{ path }}" type="video/mp4">
+            Votre navigateur ne supporte pas la vidéo.
+        </video>
+    </div>
+</body>
+</html>
+
